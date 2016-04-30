@@ -45,11 +45,21 @@ def main():
         username = raw_input('username: ')
         password = getpass('password: ')
         payload = {'username' : username, 'password' : password}
+
+        # wget用ログイン
+        cmd = "wget {0} --save-cookies=cookies.txt --keep-session-cookies".format(base_url + "/login")
+        subprocess.call(cmd, shell=True)
+        # wget実行
+        cmd = "wget -pk -E -nc -w 3 --load-cookies=cookies.txt -i{0}".format(wgetlist_name)
+        subprocess.call(cmd, shell=True)
+
+        # 添付ファイル用ログイン
         r = requests.post(base_url + "/login", data=payload)
 
-    # wget実行
-    cmd = "wget -pk -E -nc -w 3 -i{0}".format(wgetlist_name)
-    subprocess.call(cmd, shell=True)
+    else:
+        # wget実行
+        cmd = "wget -pk -E -nc -w 3 -i{0}".format(wgetlist_name)
+        subprocess.call(cmd, shell=True)
 
     # 添付ファイル取得
     for issues_id in issues_ids:
