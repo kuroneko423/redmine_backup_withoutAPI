@@ -10,14 +10,19 @@ import requests
 from getpass import getpass
 from bs4 import BeautifulSoup
 
-# set Redmine Top URL
-domain = "path.to.redmine_domain"   # ex. www.redmine.org
-#domain = "www.redmine.org"   # ex. www.redmine.org
-base_url = u"http://{0}".format(domain)
-base_dir = "./{0}/issues/".format(domain)
+# Redmine Top URL(ログイン画面)
+#domain = "path.to.redmine_domain"   # ex. www.redmine.org
+domain = "localhost:8080"   # ex. www.localhost:8080
+# ドメイン以下のプロジェクト名までのパス
+#subdomain = "path.to.project.from.domain"
+subdomain = "redmine"  # ex. redmine/sample
+
+base_url = u"http://{0}/{1}".format(domain,subdomain)
+#base_dir = "./{0}/{1}/issues/".format(domain,subdomain)
+base_dir = "./{0}/{1}/issues/".format(domain,subdomain)
 
 # ログイン有無(True:必要, False:不要)
-isLogin = False
+isLogin = True
 
 # チケット番号を記載したファイル名を記載
 issues_id_list = "issues_id_list.txt"
@@ -47,10 +52,10 @@ def main():
         payload = {'username' : username, 'password' : password}
 
         # wget用ログイン
-        cmd = "wget {0} --save-cookies=cookies.txt --keep-session-cookies".format(base_url + "/login")
-        subprocess.call(cmd, shell=True)
-        # wget実行
-        cmd = "wget -pk -E -nc -w 3 --load-cookies=cookies.txt -i{0}".format(wgetlist_name)
+        # cmd = "wget {0} --save-cookies=cookies.txt --keep-session-cookies --post-data 'username={1}&password={2}'".format(base_url + "/login",username,password)
+        # subprocess.call(cmd, shell=True)
+        # # wget実行
+        cmd = "wget -pk -E -nc -w 1 --load-cookies=cookies.txt -i{0}".format(wgetlist_name)
         subprocess.call(cmd, shell=True)
 
         # 添付ファイル用ログイン
@@ -118,7 +123,7 @@ class RedmineIssues(object):
             for download_url in self.download_urls:
 
                 # 負荷をかけないようにスリープ
-                time.sleep(3)
+                time.sleep(1)
 
                 file_name = download_url.split("/")[-1]
 
