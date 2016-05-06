@@ -205,7 +205,8 @@ class Redmine(object):
                 # unicode->utf-8変換を行い、その後にURLデコードすることで
                 # マルチバイト文字に対応する。
                 # windowsだとうまく動かないので修正。
-                file_name = urllib.unquote(download_url.split('/')[-1].encode('utf-8'))
+                # file_name = urllib.unquote(download_url.split('/')[-1]).encode('utf-8')
+                file_name = urllib.unquote(download_url.split('/')[-1].encode('utf-8')).decode('utf-8')
 
                 # ファイルのダウンロード
                 if self.isLogin:
@@ -218,7 +219,8 @@ class Redmine(object):
                             if chunk:
                                 file.write(chunk)
                                 file.flush()
-                    print "downloaded file:{0}".format(file_name)
+                    # print "downloaded file:{0}".format(file_name)
+                    print "[INFO]downloaded file:" + file_name
                 else:
                     print "[ERROR]download error"
         else: #no download files
